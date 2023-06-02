@@ -1,0 +1,29 @@
+#!/bin/bash
+#--------------------Цвета вывода--------------------
+red='\e[0;31m'
+RED='\e[1;31m'
+green='\e[0;32m'
+GREEN='\e[1;32m'
+NC='\e[0m'
+
+#----------Определяем задачи пользователей-----------
+
+    for user in $(cut -d':' -f1 /etc/passwd); do
+        usercrontab=$(crontab -l -u ${user} 2>/dev/null)
+        if [ -n "${usercrontab}" ]; then
+            echo -e "${RED}====== Start crontab for user ${NC}${GREEN}${user}${$
+            crontab -l -u ${user} | sed '/ *#/d; /^ *$/d'
+            echo -e "${RED}====== End crontab for user ${NC}${GREEN}${user}${NC$
+        fi
+    done
+    for crond in $(ls -L1 /etc/cron.d); do
+        crondtab=$(cat "/etc/cron.d/${crond}" 2>/dev/null | egrep -Ev "^\s*(;|#$
+        if [ -n "${crondtab}" ]; then
+            echo -e "${RED}====== Start cron.d ${NC}${GREEN}/etc/cron.d/${crond$
+            echo "${crondtab}"
+            echo -e "${RED}====== End cron.d ${NC}${GREEN}/etc/cron.d${crond}${$
+        fi
+    done
+    
+#------------Определяем глобальные задачи------------
+# /etc/crontab
